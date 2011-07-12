@@ -1,0 +1,7 @@
+config:
+  #global/cache/backend: apc
+  #global/cache/slow_backend: Netzarbeiter_Cache_Model_Symlink
+  global/cache/slow_backend_options/hashed_directory_level: 1
+  global/cache/slow_backend_options/hashed_directory_umask: 511 # decimal value for octal 0777
+  global/cache/slow_backend_options/file_name_prefix: mage
+  
