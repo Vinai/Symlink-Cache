@@ -1,0 +1,5 @@
+
+app/code/local/Netzarbeiter/Cache app/code/local/Netzarbeiter/Cache
+app/etc/modules/Netzarbeiter_Cache.xml app/etc/modules/Netzarbeiter_Cache.xml
+app/design/adminhtml/default/default/layout/netzarbeiter/cache.xml app/design/adminhtml/default/default/layout/netzarbeiter/cache.xml
+app/design/adminhtml/default/default/template/netzarbeiter/cache app/design/adminhtml/default/default/template/netzarbeiter/cache

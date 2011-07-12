@@ -1,0 +1,63 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension
+ * to newer versions in the future.
+ *
+ * @category   Netzarbeiter
+ * @package    Netzarbeiter_Cache
+ * @copyright  Copyright (c) 2011 Vinai Kopp http://netzarbeiter.com
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<div class="content-header">
+	<table cellspacing="0">
+		<tr>
+			<td style="width:50%;"><h3><?php echo $this->__('Netzarbeiter Symlink Filecache') ?></h3></td>
+			<td class="form-buttons"><?php echo $this->getChildHtml('initSymlinksButton') ?></td>
+		</tr>
+	</table>
+</div>
+<div>
+	<h3><?php echo $this->__('Status') ?></h3>
+	<?php echo $this->__('The Symlink Cache is currently <strong>%s</strong>', $this->getSymlinkCacheStatus()) ?><br/>
+	<?php echo $this->__('Fast Cache Backend: <strong>%s</strong>', $this->getFastBackend()) ?>
+	<?php if ($this->getSlowBackend()): ?>
+	<?php echo $this->__(', Slow Cache Backend: <strong>%s</strong>', $this->getSlowBackend()) ?>
+	<?php endif; ?>
+</div>
+<?php if (! $this->isSymlinkCacheInUse()): ?>
+<div style="margin-top: 15px; border-top: 1px solid #cccccc; padding-top: 15px;">
+	<h3><?php echo $this->__('Usage') ?></h3>
+	<?php echo $this->__('To use the Netzarbeiter symlink cache as the <strong>main cache</strong> backend, put the following code into your app/etc/local.xml file:') ?><br/>
+	<textarea style="width: 500px; height: 100px;" readonly="readonly"><?php echo $this->htmlEscape($this->getFastBackendInstructions()) ?></textarea>
+	<br/>
+	<br/>
+	<?php echo $this->__('To use the Netzarbeiter symlink cache as the <strong>slow backend</strong>, put the following code into your app/etc/local.xml file'); ?><br/>
+	<?php echo $this->__('but note you will have to configure a fast backend that requires the use of a slow backend in order to make this work (e.g. apc or memcached):') ?><br/>
+	<textarea style="width: 500px; height: 100px;" readonly="readonly"><?php echo $this->htmlEscape($this->getSlowBackendInstructions()) ?></textarea>
+</div>
+<?php endif; ?>
+<?php if ($info = $this->getResultInfo()): ?>
+<div class="symlink-cache-results" style="border: 1px solid #cccccc; background-color: #efefef; padding: 15px; margin-top: 15px;">
+	<h4><?php echo $this->__('Details') ?></h4>
+	<?php foreach ($info as $line): ?>
+	<?php echo $this->__('Created symlink to <strong>%s</strong> for tag <strong>%s</strong>',
+			$this->htmlEscape($line['target']), $this->htmlEscape($line['tag'])
+	) ?><br/>
+	<?php endforeach; ?>
+</div>
+<?php endif; ?>
