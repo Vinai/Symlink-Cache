@@ -57,4 +57,11 @@
 			</updates>
 		</layout>
 	</adminhtml>
+	<phpunit>
+		<suite>
+			<modules>
+				<Netzarbeiter_Cache/>
+			</modules>
+		</suite>
+	</phpunit>
 </config>
