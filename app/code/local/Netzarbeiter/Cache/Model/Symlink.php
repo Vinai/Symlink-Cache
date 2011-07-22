@@ -25,6 +25,21 @@
  */
 class Netzarbeiter_Cache_Model_Symlink extends Zend_Cache_Backend_File
 {
+	/**
+	 * Constructor
+	 *
+	 * @param  array $options associative array of options
+	 * @throws Zend_Cache_Exception
+	 * @return void
+	 */
+	public function __construct(array $options = array())
+	{
+		parent::__construct($options);
+//		if ($this->_options['cache_dir'] !== null && substr($this->_options['cache_dir'], 0, 1) !== '/')
+//		{
+//			$this->_options['cache_dir'] = Mage::getBaseDir('cache') . DS . $this->_options['cache_dir'];
+//		}
+	}
 
 	/**
 	 *
