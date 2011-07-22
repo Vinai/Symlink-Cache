@@ -28,7 +28,9 @@ class Netzarbeiter_Cache_Adminhtml_Netzarbeiter_CacheController
 {
 	public function indexAction()
 	{
-		$this->loadLayout()->renderLayout();
+		$this->loadLayout();
+		$this->_setActiveMenu('system');
+		$this->renderLayout();
 	}
 
 	public function initSymlinksAction()
