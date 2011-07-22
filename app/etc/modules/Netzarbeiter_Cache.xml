@@ -3,7 +3,7 @@
 	<modules>
 		<Netzarbeiter_Cache>
 			<active>true</active>
-			<codePool>local</codePool>
+			<codePool>community</codePool>
 		</Netzarbeiter_Cache>
 	</modules>
 </config>
