@@ -25,6 +25,11 @@
  */
 -->
 <config>
+	<modules>
+		<Netzarbeiter_Cache>
+			<version>0.0.1</version>
+		</Netzarbeiter_Cache>
+	</modules>
 	<global>
 		<helpers>
 			<netzarbeiter_cache>
