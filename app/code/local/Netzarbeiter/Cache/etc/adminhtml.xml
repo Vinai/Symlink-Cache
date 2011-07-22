@@ -31,7 +31,7 @@
 				<tools>
 					<children>
 						<netzarbeiter_cache translate="title" module="netzarbeiter_cache">
-							<title>Netzarbeiter Cache</title>
+							<title>Symlink Cache</title>
 							<action>adminhtml/netzarbeiter_cache/</action>
 							<sort_order>555</sort_order>
 						</netzarbeiter_cache>
@@ -49,7 +49,7 @@
 							<tools>
 								<children>
 									<netzarbeiter_cache translate="title" module="netzarbeiter_cache">
-										<title>Netzarbeiter Cache</title>
+										<title>Symlink Cache</title>
 										<sort_order>555</sort_order>
 									</netzarbeiter_cache>
 								</children>
