@@ -68,11 +68,20 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	}
 
 	/**
+	 *
+	 * @return Netzarbeiter_Cache_Model_Symlink
+	 */
+	protected function _getBackendModel()
+	{
+		return new Netzarbeiter_Cache_Model_Symlink($this->_options);
+	}
+
+	/**
 	 * @test
 	 */
 	public function backend()
 	{
-		$backend = new Netzarbeiter_Cache_Model_Symlink($this->_options);
+		$backend = $this->_getBackendModel();
 		$this->assertInstanceOf('Netzarbeiter_Cache_Model_Symlink', $backend);
 		return $backend;
 	}
@@ -81,8 +90,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends backend
 	 */
-	public function save(Netzarbeiter_Cache_Model_Symlink $backend)
+	public function save()
 	{
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$id = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -116,9 +127,9 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends save
 	 */
-	public function remove($backend)
+	public function remove()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
 
 		$data = '1234567890';
 		$id = 'test' . __METHOD__;
@@ -153,9 +164,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends remove
 	 */
-	public function clean($backend)
+	public function clean()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -194,9 +206,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function getAllIds(Netzarbeiter_Cache_Model_Symlink $backend)
+	public function getAllIds()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -220,9 +233,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function getIdsMatchingTags($backend)
+	public function getIdsMatchingTags()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -268,9 +282,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function getIdsMatchingAnyTags($backend)
+	public function getIdsMatchingAnyTags()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -331,9 +346,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function getIdsNotMatchingTags($backend)
+	public function getIdsNotMatchingTags()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -395,9 +411,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function clearAnyMatchingTag($backend)
+	public function clearAnyMatchingTag()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -451,9 +468,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function clearAllMatchingTags($backend)
+	public function clearAllMatchingTags()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -513,9 +531,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function clearNotMatchingTag($backend)
+	public function clearNotMatchingTag()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test', 'test2');
@@ -572,9 +591,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function clearOld(Netzarbeiter_Cache_Model_Symlink $backend)
+	public function clearOld()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$baseId = 'test' . __METHOD__;
 		$tags = array('test');
@@ -621,9 +641,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function load($backend)
+	public function load()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+
 		$data = '1234567890';
 		$id = 'test' . __METHOD__;
 		$tags = array();
@@ -640,9 +661,10 @@ class Netzarbeiter_Cache_Test_Model_Symlink extends EcomDev_PHPUnit_Test_Case
 	 * @test
 	 * @depends clean
 	 */
-	public function loadExpired($backend)
+	public function loadExpired()
 	{
-		/* @var $backend Netzarbeiter_Cache_Model_Symlink */
+		$backend = $this->_getBackendModel();
+		
 		$data = '1234567890';
 		$id = 'test' . __METHOD__;
 		$tags = array();
