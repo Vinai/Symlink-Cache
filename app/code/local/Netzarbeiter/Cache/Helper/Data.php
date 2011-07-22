@@ -78,7 +78,7 @@ class Netzarbeiter_Cache_Helper_Data extends Mage_Core_Helper_Abstract
 	public function initTagSymlinks()
 	{
 		$this->_result = array();
-		
+
 		$this->_removeTagLinks();
 
 		$files = $this->getRealMetadataFiles();
@@ -178,25 +178,28 @@ class Netzarbeiter_Cache_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	protected function _removeTagLinks()
 	{
-		$tags = scandir($this->_tagDir);
 		$result = true;
-		if ($tags)
+		if (file_exists($this->_tagDir) && is_dir($this->_tagDir))
 		{
-			foreach ($tags as $tag) {
-				$dir = $this->_tagDir . DS . $tag;
-				if (! is_dir($dir) || in_array($tag, array('.', '..')))
-				{
-					continue;
-				}
-				$links = scandir($dir);
-				if ($links)
-				{
-					foreach ($links as $linkName)
+			$tags = scandir($this->_tagDir);
+			if ($tags)
+			{
+				foreach ($tags as $tag) {
+					$dir = $this->_tagDir . DS . $tag;
+					if (! is_dir($dir) || in_array($tag, array('.', '..')))
 					{
-						$link = $dir . DS . $linkName;
-						if (is_link($link))
+						continue;
+					}
+					$links = scandir($dir);
+					if ($links)
+					{
+						foreach ($links as $linkName)
 						{
-							$result = $result && @unlink($link);
+							$link = $dir . DS . $linkName;
+							if (is_link($link))
+							{
+								$result = $result && @unlink($link);
+							}
 						}
 					}
 				}
