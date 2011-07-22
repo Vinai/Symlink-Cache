@@ -81,6 +81,12 @@ class Netzarbeiter_Cache_Block_Adminhtml_Cache extends Mage_Adminhtml_Block_Temp
 	<global>
 		<cache>
 			<backend>Netzarbeiter_Cache_Model_Symlink</backend>
+			<backend_options>
+				<cache_dir>var/cache</cache_dir>
+				<hashed_directory_level>1</hashed_directory_level>
+				<hashed_directory_umask>0777</hashed_directory_umask>
+				<file_name_prefix>mage</file_name_prefix>
+			</backend_options>
 		</cache>
 	</global>
 </config>
