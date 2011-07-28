@@ -35,10 +35,14 @@ class Netzarbeiter_Cache_Model_Symlink extends Zend_Cache_Backend_File
 	public function __construct(array $options = array())
 	{
 		parent::__construct($options);
-//		if ($this->_options['cache_dir'] !== null && substr($this->_options['cache_dir'], 0, 1) !== '/')
-//		{
-//			$this->_options['cache_dir'] = Mage::getBaseDir('cache') . DS . $this->_options['cache_dir'];
-//		}
+
+		// this is ugly, but if no absolute path is set cronjobs and cli scripts
+		// might fail. It's ugly because this is the only part of the class that
+		// now uses code from the Magento core.
+		if ($this->_options['cache_dir'] !== null && substr($this->_options['cache_dir'], 0, 1) !== '/')
+		{
+			$this->_options['cache_dir'] = Mage::getBaseDir('cache') . DS . $this->_options['cache_dir'];
+		}
 	}
 
 	/**
