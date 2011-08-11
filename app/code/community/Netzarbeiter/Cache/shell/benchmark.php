@@ -88,12 +88,10 @@ class benchmark extends Mage_Shell_Abstract
 			if ($maxTags < 1) $maxTags = $minTags + 5;
 			if ($maxTags > $nTags) $maxTags = $nTags;
 
-			//$this->_println('Clearing cache...');
-			Mage::app()->cleanCache();
-
-			$this->_println(sprintf('Clearing & Initialising cache with %d records using %d-%d out of %d tags per record (please be patient)...',
+			$this->_println(sprintf('Clearing & Initialising cache with %d records using %d-%d out of %d tags per record...',
 				$nEntries, $minTags, $maxTags, $nTags
 			));
+			Mage::app()->cleanCache();
 			$this->_createTagList($nTags);
 			$this->_createCacheRecords($nEntries, $minTags, $maxTags);
 
@@ -122,7 +120,7 @@ class benchmark extends Mage_Shell_Abstract
 	}
 
 	/**
-	 * Display average values from given tag benchmark times
+	 * Display average values from given tag benchmark times.
 	 *
 	 * @param array $times
 	 */
@@ -139,30 +137,35 @@ class benchmark extends Mage_Shell_Abstract
 	}
 
 	/**
-	 * Display the configured cache frontend/backend
+	 * Display the configured cache backend(s).
 	 */
 	protected function _echoCacheConfig()
 	{
-		$fastBackend = (string) Mage::getConfig()->getNode('global/cache/backend');
+		$backend = (string) Mage::getConfig()->getNode('global/cache/backend');
+		$realBackend = Mage::app()->getCache()->getBackend();
 		$slowBackend = (string) Mage::getConfig()->getNode('global/cache/slow_backend');
 
-		if ('' === $fastBackend)
+		if ('' === $backend)
 		{
-			$fastBackend = 'File';
+			$backend = get_class($realBackend);
+		}
+		if ($realBackend instanceof Zend_Cache_Backend_TwoLevels && '' === $slowBackend)
+		{
+			$slowBackend = 'Zend_Cache_Backend_File';
 		}
 
 		if ('' === $slowBackend)
 		{
-			$this->_println(sprintf('Cache Backend: %s', $fastBackend));
+			$this->_println(sprintf('Cache Configuration: single backend %s', $backend));
 		}
 		else
 		{
-			$this->_println(sprintf('Fast Cache Backend: %s, Slow Cache Backend: %s', $fastBackend, $slowBackend));
+			$this->_println(sprintf('Cache Configuration: fast backend: %s, slow backend: %s', $backend, $slowBackend));
 		}
 	}
 
 	/**
-	 * Create internal list of cache tags
+	 * Create internal list of cache tags.
 	 *
 	 * @param int $nTags The number of tags to create
 	 */
@@ -196,7 +199,7 @@ class benchmark extends Mage_Shell_Abstract
 	}
 
 	/**
-	 * Return the configured cache prefix according to the logic in core/cache
+	 * Return the configured cache prefix according to the logic in core/cache.
 	 *
 	 * @return string The used cache prefix
 	 * @see Mage_Core_Model_Cache::__construct()
@@ -229,7 +232,7 @@ class benchmark extends Mage_Shell_Abstract
 	}
 
 	/**
-	 * Return the current number of cache records
+	 * Return the current number of cache records.
 	 *
 	 * @return int The current number of cache records
 	 */
@@ -241,7 +244,7 @@ class benchmark extends Mage_Shell_Abstract
 
 	/**
 	 * Create the given number of cache records.
-	 * Each record only contains the sample data X.
+	 * Each record only contains the sample data "X".
 	 * Each records is associated with a random number of cache tags between the
 	 * given min and max.
 	 *
@@ -252,31 +255,36 @@ class benchmark extends Mage_Shell_Abstract
 	protected function _createCacheRecords($nEntries, $minTags, $maxTags)
 	{
 		$data = 'X';
-		$displayNumericPercentage = 25; // percent
-		$displayDotPercentage = 5; // percent
+		$progressBar = $this->_getProgressBar(0, $nEntries);
 
-		$displayPercentageNum = ceil($nEntries / 100 * $displayNumericPercentage);
-		$displayDotNum = ceil($nEntries / 100 * $displayDotPercentage);
-
+		$start = microtime(true);
 		for ($i = 0; $i < $nEntries; $i++)
 		{
 			$id = sprintf('rec_%010d', $i);
 			$tags = $this->_getRandomTags($minTags, $maxTags);
 			Mage::app()->saveCache($data, $id, $tags);
-			if (0 === ($i % $displayPercentageNum))
-			{
-				echo '' . floor(100 / ($nTags / $i)) . '% ';
-			}
-			elseif (0 === (%i % $displayDotNum))
-			{
-				echo '.';
-			}
+			$progressBar->update($i+1);
 		}
-		echo "100%\n";
+		$time = microtime(true) - $start;
+		$progressBar->finish();
+		$this->_println(sprintf('Initialization finished in %ss', $time));
 	}
 
 	/**
-	 * Return a random number of cache tags between the given range
+	 * Since many operations can take quite a long time for large cache pools,
+	 * this might help ease the waiting time with a nice console progress bar.
+	 *
+	 * @return Zend_ProgressBar A fresh Zend_ProgressBar instance
+	 */
+	protected function _getProgressBar($min, $max)
+	{
+		$progressBar = new Zend_ProgressBar(new Zend_ProgressBar_Adapter_Console(), $min, $max);
+		$progressBar->getAdapter()->setFinishAction(Zend_ProgressBar_Adapter_Console::FINISH_ACTION_CLEAR_LINE);
+		return $progressBar;
+	}
+
+	/**
+	 * Return a random number of cache tags between the given range.
 	 *
 	 * @param int $min
 	 * @param int $max
@@ -294,7 +302,7 @@ class benchmark extends Mage_Shell_Abstract
 	}
 
 	/**
-	 * Display the given string with a trailing newline
+	 * Display the given string with a trailing newline.
 	 *
 	 * @param string $msg The string to display
 	 */
@@ -306,23 +314,40 @@ class benchmark extends Mage_Shell_Abstract
 	/**
 	 * Get the time used for calling getIdsMatchingTags() for every cache tag in
 	 * the property $_tags.
+	 * If $verbose is set to true, display detailed statistics for each tag,
+	 * otherwise display a progress bar.
 	 *
-	 * @param bool $output If true output statistics for every cache tag
+	 * @param bool $verbose If true output statistics for every cache tag
 	 * @return array Return an array of timing statistics
 	 */
-	protected function _benchmarkByTag($output = false)
+	protected function _benchmarkByTag($verbose = false)
 	{
 		$times = array();
+
+		if (! $verbose)
+		{
+			$progressBar = $this->_getProgressBar(0, count($this->_tags));
+			$counter = 0;
+		}
+
 		foreach ($this->_tags as $tag)
 		{
 			$start = microtime(true);
 			$ids = Mage::app()->getCache()->getIdsMatchingTags(array($tag));
 			$end = microtime(true);
 			$times[$tag] = array('time' => $end - $start, 'count' => count($ids));
-			if ($output)
+			if ($verbose)
 			{
 				$this->_echoTime($tag, $times[$tag]['time'], $times[$tag]['count']);
 			}
+			else
+			{
+				$progressBar->update(++$counter);
+			}
+		}
+		if (! $verbose)
+		{
+			$progressBar->finish();
 		}
 		return $times;
 	}
@@ -337,12 +362,12 @@ class benchmark extends Mage_Shell_Abstract
 	protected function _echoTime($tag, $time, $count)
 	{
 		$length = $this->_getLongestTagLength();
-		$pattern = '%-' . $length . 's  (%4s IDs) %s';
+		$pattern = '%-' . $length . 's  (%4s IDs) %ss';
 		$this->_println(sprintf($pattern, $tag, $count, $time));
 	}
 
 	/**
-	 * Return the length of the longest tag in the $_tags property
+	 * Return the length of the longest tag in the $_tags property.
 	 *
 	 * @param bool $force If true don't use the cached value
 	 * @return int The length of the longest tag
