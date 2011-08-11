@@ -81,15 +81,24 @@ class benchmark extends Mage_Shell_Abstract
 
 			if ($nEntries < 1)
 			{
-				throw new InvalidArgumentException('Specify one or more entries to create.');
+				throw new InvalidArgumentException('Number of records to create must be one or more');
 			}
 			if ($nTags < 1) $nTags = 30;
 			if ($minTags < 1) $minTags = 5;
 			if ($maxTags < 1) $maxTags = $minTags + 5;
 			if ($maxTags > $nTags) $maxTags = $nTags;
 
-			$this->_println(sprintf('Clearing & Initialising cache with %d records using %d-%d out of %d tags per record...',
-				$nEntries, $minTags, $maxTags, $nTags
+			if ($minTags != $maxTags)
+			{
+				$rangeString = sprintf('%d-%d', $minTags, $maxTags);
+			}
+			else
+			{
+				$rangeString = $minTags;
+			}
+
+			$this->_println(sprintf('Clearing & Initialising cache with %d records using %s out of %d tags per record...',
+				$nEntries, $rangeString, $nTags
 			));
 			Mage::app()->cleanCache();
 			$this->_createTagList($nTags);
@@ -98,6 +107,9 @@ class benchmark extends Mage_Shell_Abstract
 		}
 		else
 		{
+			printf('Analyzing current cache contents (please be patient)... ');
+			$start = microtime(true);
+
 			$nTags = $this->_readTags();
 			if (1 > $nTags)
 			{
@@ -108,6 +120,9 @@ class benchmark extends Mage_Shell_Abstract
 			{
 				throw new OutOfRangeException('No cache records found in cache');
 			}
+
+			$time = microtime(true) - $start;
+			$this->_println(sprintf('%d cache IDs and %d cache tags read in %ss', $nEntries, $nTags, $time));
 		}
 
 		$this->_println(sprintf('Benchmarking %d cache records with %d tags', $nEntries, $nTags));
@@ -192,7 +207,13 @@ class benchmark extends Mage_Shell_Abstract
 		$prefixLen = strlen($prefix);
 		foreach ($tags as $tag)
 		{
-			$this->_tags[] = substr($tag, $prefixLen);
+			$tag = substr($tag, $prefixLen);
+
+			// since all records saved through Magento are associated with the
+			// MAGE cache tag it is not representative for benchmarking.
+			if ('MAGE' === $tag) continue;
+
+			$this->_tags[] = $tag;
 		}
 		sort($this->_tags);
 		return count($this->_tags);
