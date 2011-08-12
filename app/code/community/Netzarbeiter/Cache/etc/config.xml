@@ -27,7 +27,7 @@
 <config>
 	<modules>
 		<Netzarbeiter_Cache>
-			<version>0.0.3</version>
+			<version>0.0.4</version>
 		</Netzarbeiter_Cache>
 	</modules>
 	<global>
