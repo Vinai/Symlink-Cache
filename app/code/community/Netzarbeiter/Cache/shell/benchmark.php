@@ -316,6 +316,9 @@ class benchmark extends Mage_Shell_Abstract
 		$tags = array();
 		$num = mt_rand($min, $max);
 		$keys = array_rand($this->_tags, $num);
+		if (1 === $num) {
+			$keys = array($keys); // array_rand returns the key directly if $num is 1
+		}
 		foreach ($keys as $i) {
 			$tags[] = $this->_tags[$i];
 		}
