@@ -39,7 +39,7 @@ class Netzarbeiter_Cache_Model_Symlink extends Zend_Cache_Backend_File
 		// now uses code from the Magento core.
 		if (array_key_exists('cache_dir', $options) && substr(strval($options['cache_dir']), 0, 1) !== '/')
 		{
-			$options['cache_dir'] = Mage::getBaseDir('cache') . DS . $options['cache_dir'];
+			$options['cache_dir'] = Mage::getBaseDir() . DS . $options['cache_dir'];
 		}
 
 		parent::__construct($options);
