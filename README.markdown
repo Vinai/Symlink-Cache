@@ -1,3 +1,8 @@
+## DEPRECATED ##
+
+This extension is deprecated and is only left here to point anybody visiting to the successor extension here: https://github.com/colinmollenhour/Cm_Cache_Backend_File
+
+## Old README: ##
 
 This module is intended to improve the performance of the file cache backend
 with large cache pools (as fast or slow backend).
